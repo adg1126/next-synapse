@@ -10,6 +10,7 @@ export default function Hero() {
             src='/documents.png'
             fill
             alt='document'
+            sizes='auto'
             className='object-contain'
           />
         </div>
