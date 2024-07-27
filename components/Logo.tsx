@@ -13,10 +13,20 @@ export default function Logo() {
   return (
     <div className='flex items-center gap-x-2'>
       <Image
+        className='block dark:hidden'
         src='/logo.svg'
         alt='logo'
         width={40}
         height={40}
+        style={{ width: 'auto', height: 'auto' }}
+      />
+      <Image
+        className='hidden dark:block'
+        src='/logo-dark.svg'
+        alt='logo'
+        width={40}
+        height={40}
+        style={{ width: 'auto', height: 'auto' }}
       />
       <p className={cn('font-semibold', font.className)}>Synapse</p>
     </div>
