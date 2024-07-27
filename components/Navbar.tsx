@@ -5,6 +5,7 @@ import { useScrollTop } from '@/hooks/use-scroll-top';
 import { cn } from '@/lib/utils';
 
 import Logo from './Logo';
+import ThemeSwitch from './ThemeSwitch';
 
 export default function Navbar() {
   const scrolled = useScrollTop({ threshold: 10 });
@@ -18,7 +19,8 @@ export default function Navbar() {
     >
       <Logo />
       <div className='md:ml-auto md:justify-end justify-between w-full flex items-center gap-x-2'>
-        Login
+        <div>Login</div>
+        <ThemeSwitch />
       </div>
     </div>
   );
