@@ -4,6 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { ConvexClientProvider } from '@/providers/convex-provider';
+import StoreProvider from '@/providers/store-provider';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -55,14 +56,16 @@ export default function RootLayout({
         )}
       >
         <ConvexClientProvider>
-          <ThemeProvider
-            attribute='class'
-            defaultTheme='light'
-            disableTransitionOnChange
-            storageKey='synapse-theme'
-          >
-            {children}
-          </ThemeProvider>
+          <StoreProvider>
+            <ThemeProvider
+              attribute='class'
+              defaultTheme='light'
+              disableTransitionOnChange
+              storageKey='synapse-theme'
+            >
+              {children}
+            </ThemeProvider>
+          </StoreProvider>
         </ConvexClientProvider>
       </body>
     </html>
