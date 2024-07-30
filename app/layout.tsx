@@ -3,6 +3,7 @@ import { Inter as FontSans } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/providers/theme-provider';
+import { ConvexClientProvider } from '@/providers/convex-provider';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -53,14 +54,16 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='light'
-          disableTransitionOnChange
-          storageKey='synapse-theme'
-        >
-          {children}
-        </ThemeProvider>
+        <ConvexClientProvider>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='light'
+            disableTransitionOnChange
+            storageKey='synapse-theme'
+          >
+            {children}
+          </ThemeProvider>
+        </ConvexClientProvider>
       </body>
     </html>
   );
