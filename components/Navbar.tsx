@@ -43,7 +43,7 @@ export default function Navbar() {
         )}
         {isAuthenticated && !isLoading && (
           <>
-            <Link href='/'>
+            <Link href='/documents'>
               <Button
                 variant='ghost'
                 size='sm'

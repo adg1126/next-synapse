@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
 import Spinner from '@/components/Spinner';
@@ -27,10 +28,12 @@ export default function Heading() {
         </div>
       )}
       {isAuthenticated && !isLoading ? (
-        <Button>
-          Enter Synapse
-          <ArrowRight className='h-4 w-4 ml-2' />
-        </Button>
+        <Link href='/documents'>
+          <Button>
+            Enter Synapse
+            <ArrowRight className='h-4 w-4 ml-2' />
+          </Button>
+        </Link>
       ) : (
         <SignInButton>
           <Button size='lg'>
