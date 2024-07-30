@@ -1,15 +1,17 @@
 'use client';
-import React, {
-  ElementRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { ElementRef, useCallback, useEffect, useRef } from 'react';
 
 import { usePathname } from 'next/navigation';
 import { useMediaQuery } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
+
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import {
+  setIsCollapsed,
+  setIsResetting,
+  setSidebarWidth,
+} from '@/redux/sidebar/sidebarSlice';
+import { selectSidebar } from '@/redux/sidebar/sidebarSelectors';
 
 import { ChevronLeft, ChevronsLeft, MenuIcon } from 'lucide-react';
 
@@ -17,14 +19,16 @@ export default function Sidebar() {
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
 
+  const dispatch = useAppDispatch();
+  const sidebar = useAppSelector(selectSidebar);
+  const { sidebarWidth, navbarLeft, navbarWidth, isResetting, isCollapsed } =
+    sidebar;
+
   const isResizingRef = useRef(false),
     sidebarRef = useRef<ElementRef<'aside'>>(null),
     navbarRef = useRef<ElementRef<'div'>>(null);
 
-  const [isResetting, setIsResetting] = useState(false),
-    [isCollapsed, setIsCollapsed] = useState(false);
-
-  const setSidebarAndNavbarStyle = ({
+  const setStyle = ({
     sidebarWidth,
     navbarLeft,
     navbarWidth,
@@ -40,6 +44,10 @@ export default function Sidebar() {
     }
   };
 
+  useEffect(() => {
+    setStyle({ sidebarWidth, navbarLeft, navbarWidth });
+  }, [sidebarWidth, navbarLeft, navbarWidth]);
+
   const handleMouseMove = (e: MouseEvent) => {
     if (!isResizingRef) return;
 
@@ -49,11 +57,13 @@ export default function Sidebar() {
     if (newWidth > 480) newWidth = 480;
 
     if (sidebarRef.current && navbarRef.current) {
-      setSidebarAndNavbarStyle({
-        sidebarWidth: `${newWidth}px`,
-        navbarLeft: `${newWidth}px`,
-        navbarWidth: `cacl(100% - ${newWidth}px)`,
-      });
+      dispatch(
+        setSidebarWidth({
+          sidebarWidth: `${newWidth}px`,
+          navbarLeft: `${newWidth}px`,
+          navbarWidth: `cacl(100% - ${newWidth}px)`,
+        })
+      );
     }
   };
 
@@ -74,31 +84,35 @@ export default function Sidebar() {
 
   const resetWidth = useCallback(() => {
     if (sidebarRef.current && navbarRef.current) {
-      setIsCollapsed(false);
-      setIsResetting(true);
+      dispatch(setIsCollapsed(false));
+      dispatch(setIsResetting(true));
 
-      setSidebarAndNavbarStyle({
-        sidebarWidth: isMobile ? '100%' : '240px',
-        navbarLeft: isMobile ? '100%' : '240px',
-        navbarWidth: isMobile ? '0' : 'calc(100% - 240px)',
-      });
-      setTimeout(() => setIsResetting(false), 300);
+      dispatch(
+        setSidebarWidth({
+          sidebarWidth: isMobile ? '100%' : '240px',
+          navbarLeft: isMobile ? '100%' : '240px',
+          navbarWidth: isMobile ? '0' : 'calc(100% - 240px)',
+        })
+      );
+      setTimeout(() => dispatch(setIsResetting(false)), 300);
     }
-  }, [isMobile]);
+  }, [isMobile, dispatch]);
 
   const collapse = useCallback(() => {
     if (sidebarRef.current && navbarRef.current) {
-      setIsCollapsed(true);
-      setIsResetting(true);
+      dispatch(setIsCollapsed(true));
+      dispatch(setIsResetting(true));
 
-      setSidebarAndNavbarStyle({
-        sidebarWidth: '0',
-        navbarLeft: '0',
-        navbarWidth: '100%',
-      });
-      setTimeout(() => setIsResetting(false), 300);
+      dispatch(
+        setSidebarWidth({
+          sidebarWidth: '0',
+          navbarLeft: '0',
+          navbarWidth: '100%',
+        })
+      );
+      setTimeout(() => dispatch(setIsResetting(false)), 300);
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     isMobile ? collapse() : resetWidth();
