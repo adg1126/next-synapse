@@ -1,4 +1,4 @@
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 
 import { mutation, query } from './_generated/server';
 import { Doc, Id } from './_generated/dataModel';
@@ -12,7 +12,10 @@ export const create = mutation({
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {
-      throw new Error('Unauthorized');
+      throw new ConvexError({
+        message: 'Unauthorized: Access denied. Login to access this resource.',
+        code: 400,
+      });
     }
 
     const userId = identity.subject;
@@ -34,7 +37,7 @@ export const get = query({
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {
-      throw new Error('Unauthorized');
+      return;
     }
 
     const userId = identity.subject;
