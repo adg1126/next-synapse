@@ -13,11 +13,17 @@ import {
 } from '@/redux/sidebar/sidebarSlice';
 import { selectSidebar } from '@/redux/sidebar/sidebarSelectors';
 
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+
 import { ChevronLeft, ChevronsLeft, MenuIcon } from 'lucide-react';
+import UserItems from '@/components/Sidebar/UserItems';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
+
+  const documents = useQuery(api.documents.get);
 
   const dispatch = useAppDispatch();
   const sidebar = useAppSelector(selectSidebar);
@@ -156,10 +162,10 @@ export default function Sidebar() {
         </div>
 
         <div>
-          <p>Action items</p>
+          <UserItems />
         </div>
         <div className='mt-4'>
-          <p>Documents</p>
+          {documents?.map((doc) => <p key={doc._id}>{doc.title}</p>)}
         </div>
         <div
           onMouseDown={handleMouseDown}
