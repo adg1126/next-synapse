@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
 
-export default function UserItems() {
+export default function SidebarSwitcher() {
   const { user } = useUser();
 
   return (
@@ -23,11 +23,11 @@ export default function UserItems() {
           role='button'
           className='flex items-center text-sm p-3 w-full hover:bg-primary/5'
         >
-          <div className='gap-x-2 flex items-center max-w-[150px]'>
+          <div className='gap-x-2 flex items-center max-w-[120px]'>
             <Avatar className='h-5 w-5'>
               <AvatarImage src={user?.imageUrl} />
             </Avatar>
-            <span className='text-start font-medium line-clamp-1'>
+            <span className='text-start font-medium truncate'>
               {user?.fullName}&apos;s Synapse
             </span>
           </div>

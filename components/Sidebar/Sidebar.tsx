@@ -16,8 +16,9 @@ import { selectSidebar } from '@/redux/sidebar/sidebarSelectors';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
-import { ChevronLeft, ChevronsLeft, MenuIcon } from 'lucide-react';
-import UserItems from '@/components/Sidebar/UserItems';
+import { ChevronLeft, ChevronsLeft, MenuIcon, NotebookPen } from 'lucide-react';
+import SidebarSwitcher from '@/components/Sidebar/SidebarSwitcher';
+import NewNoteButton from '../NewNoteButton';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -138,7 +139,7 @@ export default function Sidebar() {
           isMobile && 'w-0'
         )}
       >
-        <div className='absolute top-3 right-2 flex flex-col gap-y-2'>
+        {/* <div className='absolute top-3 right-2 flex flex-col gap-y-2'>
           <div
             role='button'
             onClick={collapse}
@@ -159,10 +160,40 @@ export default function Sidebar() {
           >
             <ChevronLeft className='h-6 w-6' />
           </div>
+        </div> */}
+        <div className='absolute top-3 right-2 flex flex-row items-start gap-x-2'>
+          <div>
+            <div
+              role='button'
+              onClick={collapse}
+              className={cn(
+                'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition',
+                isMobile && 'opacity-100'
+              )}
+            >
+              <ChevronsLeft className='h-6 w-6' />
+            </div>
+            <div
+              role='button'
+              className={cn(
+                'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition',
+                isMobile && 'opacity-100'
+              )}
+              onClick={resetWidth}
+            >
+              <ChevronLeft className='h-6 w-6' />
+            </div>
+          </div>
+          <div>
+            <NewNoteButton
+              className='flex items-center justify-center h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-100'
+              icon={<NotebookPen className='h-5 w-5' />}
+            />
+          </div>
         </div>
 
         <div>
-          <UserItems />
+          <SidebarSwitcher />
         </div>
         <div className='mt-4'>
           {documents?.map((doc) => <p key={doc._id}>{doc.title}</p>)}
