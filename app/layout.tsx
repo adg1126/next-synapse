@@ -8,6 +8,7 @@ import { ConvexClientProvider } from '@/providers/convex-provider';
 import StoreProvider from '@/providers/store-provider';
 
 import { Toaster } from 'sonner';
+import { CheckCircle, CircleAlert, Info, TriangleAlert } from 'lucide-react';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -66,7 +67,46 @@ export default function RootLayout({
               disableTransitionOnChange
               storageKey='synapse-theme'
             >
-              <Toaster position='bottom-center' />
+              <Toaster
+                position='bottom-center'
+                toastOptions={{
+                  classNames: {
+                    success:
+                      'w-auto bg-background text-dark border-1 border-green-500 dark:text-white flex flex-row gap-x-5',
+                    error:
+                      'w-auto bg-background text-dark border-1 border-red-500 dark:text-white flex flex-row gap-x-5',
+                    warning:
+                      'w-auto bg-background text-dark border-1 border-yellow-500 dark:text-white flex flex-row gap-x-5',
+                    info: 'w-auto bg-background text-dark border-1 border-blue-500 dark:text-white flex flex-row gap-x-5',
+                  },
+                }}
+                icons={{
+                  success: (
+                    <CheckCircle
+                      className='w-7 h-7'
+                      color='#22c55e'
+                    />
+                  ),
+                  error: (
+                    <CircleAlert
+                      className='w-7 h-7'
+                      color='#ef4444'
+                    />
+                  ),
+                  warning: (
+                    <TriangleAlert
+                      className='w-7 h-7'
+                      color='#eab308'
+                    />
+                  ),
+                  info: (
+                    <Info
+                      className='w-7 h-7'
+                      color='#3b82f6'
+                    />
+                  ),
+                }}
+              />
               {children}
             </ThemeProvider>
           </StoreProvider>
