@@ -13,16 +13,29 @@ import {
 } from '@/redux/sidebar/sidebarSlice';
 import { selectSidebar } from '@/redux/sidebar/sidebarSelectors';
 
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { ConvexError } from 'convex/values';
 
-import { ChevronLeft, ChevronsLeft, MenuIcon, NotebookPen } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronsLeft,
+  MenuIcon,
+  NotebookPen,
+  PlusCircle,
+  Search,
+  Settings,
+} from 'lucide-react';
 import SidebarSwitcher from '@/components/Sidebar/SidebarSwitcher';
 import NewNoteButton from '../NewNoteButton';
+import Hint from '../Hint';
+import UserItem from './UserItem';
+import { toast } from 'sonner';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const create = useMutation(api.documents.create);
 
   const documents = useQuery(api.documents.get);
 
@@ -129,6 +142,23 @@ export default function Sidebar() {
     if (isMobile) collapse();
   }, [isMobile, collapse, pathname]);
 
+  const handleCreateDocument = () => {
+    const promise = create({ title: 'Untitled' });
+
+    promise
+      .then(() => {
+        toast.success('Document created');
+      })
+      .catch((err) => {
+        const errorMessage =
+          err instanceof ConvexError
+            ? (err.data as { message: string }).message
+            : 'Unexpected error occurred';
+
+        toast.error(errorMessage);
+      });
+  };
+
   return (
     <>
       <aside
@@ -139,66 +169,91 @@ export default function Sidebar() {
           isMobile && 'w-0'
         )}
       >
-        {/* <div className='absolute top-3 right-2 flex flex-col gap-y-2'>
-          <div
-            role='button'
-            onClick={collapse}
-            className={cn(
-              'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition',
-              isMobile && 'opacity-100'
-            )}
-          >
-            <ChevronsLeft className='h-6 w-6' />
-          </div>
-          <div
-            role='button'
-            className={cn(
-              'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition',
-              isMobile && 'opacity-100'
-            )}
-            onClick={resetWidth}
-          >
-            <ChevronLeft className='h-6 w-6' />
-          </div>
-        </div> */}
         <div className='absolute top-3 right-2 flex flex-row items-start gap-x-2'>
           <div>
-            <div
-              role='button'
-              onClick={collapse}
-              className={cn(
-                'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition',
-                isMobile && 'opacity-100'
-              )}
-            >
-              <ChevronsLeft className='h-6 w-6' />
-            </div>
-            <div
-              role='button'
-              className={cn(
-                'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition',
-                isMobile && 'opacity-100'
-              )}
-              onClick={resetWidth}
-            >
-              <ChevronLeft className='h-6 w-6' />
-            </div>
+            <Hint label='Close Sidebar'>
+              <div
+                role='button'
+                onClick={collapse}
+                className={cn(
+                  'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition',
+                  isMobile && 'opacity-100'
+                )}
+              >
+                <ChevronsLeft className='h-6 w-6' />
+              </div>
+            </Hint>
+            {/* <Hint label='Reset Size'>
+              <div
+                role='button'
+                className={cn(
+                  'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition',
+                  isMobile && 'opacity-100'
+                )}
+                onClick={resetWidth}
+              >
+                <ChevronLeft className='h-6 w-6' />
+              </div>
+            </Hint> */}
           </div>
-          <div>
-            <NewNoteButton
-              className='flex items-center justify-center h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-100'
-              icon={<NotebookPen className='h-5 w-5' />}
-            />
-          </div>
+          <Hint
+            side='right'
+            label='Create a New Note'
+          >
+            <div>
+              <NewNoteButton
+                className='flex items-center justify-center h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-100'
+                icon={<NotebookPen className='h-5 w-5' />}
+              />
+            </div>
+          </Hint>
         </div>
 
         <div>
           <SidebarSwitcher />
+          <Hint
+            label='Search and quickly jump to a page'
+            side='right'
+          >
+            <div>
+              <UserItem
+                label='Search'
+                icon={Search}
+                isSearch
+                onClick={() => {}}
+              />
+            </div>
+          </Hint>
+          <Hint
+            label='Search and quickly jump to a page'
+            side='right'
+          >
+            <div>
+              <UserItem
+                label='Settings'
+                icon={Settings}
+                onClick={() => {}}
+              />
+            </div>
+          </Hint>
+          <Hint
+            side='right'
+            label='Create a New Note'
+          >
+            <div>
+              <UserItem
+                label='New page'
+                icon={PlusCircle}
+                onClick={handleCreateDocument}
+              />
+            </div>
+          </Hint>
         </div>
         <div className='mt-4'>
           {documents?.map((doc) => <p key={doc._id}>{doc.title}</p>)}
         </div>
         <div
+          role='button'
           onMouseDown={handleMouseDown}
           className='opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0'
         />
