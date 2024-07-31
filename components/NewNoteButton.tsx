@@ -4,13 +4,13 @@ import React from 'react';
 import { api } from '@/convex/_generated/api';
 import { useMutation } from 'convex/react';
 import { ConvexError } from 'convex/values';
-import { cn } from '@/lib/utils';
+
+import { NewNoteButtonProps } from '@/types';
 
 import { toast } from 'sonner';
 
 export default function NewNoteButton({
   label,
-  hintLabel,
   className,
   icon,
 }: NewNoteButtonProps) {
@@ -36,11 +36,12 @@ export default function NewNoteButton({
   return (
     <div
       role='button'
-      className={cn(className)}
+      className={className}
       onClick={handleCreateDocument}
     >
       {icon}
-      {label}
+
+      <span className='truncate'>{label}</span>
     </div>
   );
 }
