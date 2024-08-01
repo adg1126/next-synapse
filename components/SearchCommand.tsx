@@ -7,7 +7,7 @@ import { useUser } from '@clerk/nextjs';
 import { api } from '@/convex/_generated/api';
 
 import { useAppDispatch, useAppSelector } from '@/hooks/redux';
-import { selectSearchModal } from '@/redux/modal/modalSelectors';
+import { selectModal } from '@/redux/modal/modalSelectors';
 import { setModalOpen } from '@/redux/modal/modalSlice';
 import { ModalProvider } from '@/providers/modal-provider';
 import {
@@ -26,7 +26,7 @@ export default function SearchCommand() {
     documents = useQuery(api.documents.getDocuments);
 
   const dispatch = useAppDispatch();
-  const { isOpen } = useAppSelector(selectSearchModal);
+  const { isOpen } = useAppSelector((state) => selectModal(state, 'search'));
 
   const handleSearchModalOpen = useCallback(
     (newVal: boolean) => {

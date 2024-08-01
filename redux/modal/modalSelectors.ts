@@ -3,14 +3,12 @@ import { RootState } from '../store';
 
 const selectStore = (state: RootState) => state;
 
-export const selectModal = createSelector(selectStore, (state) => state.modal);
-
-export const selectSearchModal = createSelector(
-  selectModal,
-  (modal) => modal.search
+export const selectRootModal = createSelector(
+  selectStore,
+  (state) => state.modal
 );
 
-export const selectDeleteModal = createSelector(
-  selectModal,
-  (modal) => modal.delete
+export const selectModal = createSelector(
+  [selectRootModal, (state: RootState, modalName: string) => modalName],
+  (modal, modalName) => modal[modalName]
 );

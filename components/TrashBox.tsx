@@ -9,6 +9,7 @@ import { Id } from '@/convex/_generated/dataModel';
 import { ConvexError } from 'convex/values';
 
 import { useAppDispatch } from '@/hooks/redux';
+import { setModalOpen } from '@/redux/modal/modalSlice';
 
 import { toast } from 'sonner';
 import Spinner from './Spinner';
@@ -16,7 +17,6 @@ import { Search, Trash, Undo2 } from 'lucide-react';
 import { Input } from './ui/input';
 import ConfirmModal from './modals/ConfirmModal';
 import { buttonVariants } from './ui/button';
-import { setModalOpen } from '@/redux/modal/modalSlice';
 
 export default function TrashBox() {
   const router = useRouter(),
