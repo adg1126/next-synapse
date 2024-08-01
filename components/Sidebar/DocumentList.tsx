@@ -94,7 +94,7 @@ export default function DocumentList({
   return (
     <>
       <p
-        style={{ paddingLeft: level ? `${level * 12 + 25}px` : '' }}
+        style={{ paddingLeft: level > 0 ? `${level * 12 + 25}px` : '12px' }}
         className={cn(
           'hidden text-sm font-medium text-muted-foreground/80',
           expanded && 'last:block',
