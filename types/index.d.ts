@@ -21,7 +21,7 @@ declare interface SidebarItemProps {
   onExpand?: () => void;
   label: String;
   icon: LucideIcon;
-  onClick: () => void;
+  onClick?: () => void;
   maxLevel?: number;
 }
 
@@ -39,4 +39,14 @@ declare interface DocumentListProps {
   parentDocumentId?: Id<'documents'>;
   level?: number;
   data?: Doc<'documents'>[];
+}
+
+declare interface ConfirmModalProps {
+  children: React.ReactNode;
+  onConfirm: () => void;
+  onCancel: () => void;
+  disabled?: boolean;
+  header: string;
+  description?: string;
+  confirmButtonClassName?: string;
 }
