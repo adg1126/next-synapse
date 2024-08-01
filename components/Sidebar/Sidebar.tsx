@@ -13,12 +13,11 @@ import {
 } from '@/redux/sidebar/sidebarSlice';
 import { selectSidebar } from '@/redux/sidebar/sidebarSelectors';
 
-import { useMutation, useQuery } from 'convex/react';
+import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { ConvexError } from 'convex/values';
 
 import {
-  ChevronLeft,
   ChevronsLeft,
   MenuIcon,
   NotebookPen,
@@ -29,15 +28,14 @@ import {
 import SidebarSwitcher from '@/components/Sidebar/SidebarSwitcher';
 import NewNoteButton from '../NewNoteButton';
 import Hint from '../Hint';
-import UserItem from './UserItem';
+import SidebarItem from './SidebarItem';
 import { toast } from 'sonner';
+import DocumentList from './DocumentList';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const create = useMutation(api.documents.create);
-
-  const documents = useQuery(api.documents.get);
 
   const dispatch = useAppDispatch();
   const sidebar = useAppSelector(selectSidebar);
@@ -183,18 +181,6 @@ export default function Sidebar() {
                 <ChevronsLeft className='h-6 w-6' />
               </div>
             </Hint>
-            {/* <Hint label='Reset Size'>
-              <div
-                role='button'
-                className={cn(
-                  'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition',
-                  isMobile && 'opacity-100'
-                )}
-                onClick={resetWidth}
-              >
-                <ChevronLeft className='h-6 w-6' />
-              </div>
-            </Hint> */}
           </div>
           <Hint
             side='right'
@@ -216,7 +202,7 @@ export default function Sidebar() {
             side='right'
           >
             <div>
-              <UserItem
+              <SidebarItem
                 label='Search'
                 icon={Search}
                 isSearch
@@ -229,7 +215,7 @@ export default function Sidebar() {
             side='right'
           >
             <div>
-              <UserItem
+              <SidebarItem
                 label='Settings'
                 icon={Settings}
                 onClick={() => {}}
@@ -241,7 +227,7 @@ export default function Sidebar() {
             label='Create a New Note'
           >
             <div>
-              <UserItem
+              <SidebarItem
                 label='New page'
                 icon={PlusCircle}
                 onClick={handleCreateDocument}
@@ -250,7 +236,7 @@ export default function Sidebar() {
           </Hint>
         </div>
         <div className='mt-4'>
-          {documents?.map((doc) => <p key={doc._id}>{doc.title}</p>)}
+          <DocumentList />
         </div>
         <div
           role='button'

@@ -1,4 +1,4 @@
-import { Id } from '@/convex/_generated/dataModel';
+import { Id, Doc } from '@/convex/_generated/dataModel';
 import { LucideIcon } from 'lucide-react';
 
 declare interface ConvexClientProviderProps {
@@ -11,17 +11,18 @@ declare interface NewNoteButtonProps {
   icon?: React.ReactNode;
 }
 
-declare interface UserItemProps {
+declare interface SidebarItemProps {
   id?: Id<'documents'>;
   documentIcon?: string;
   active?: boolean;
   expanded?: boolean;
   isSearch?: boolean;
   level?: number;
-  onExpanded?: () => void;
+  onExpand?: () => void;
   label: String;
   icon: LucideIcon;
   onClick: () => void;
+  maxLevel?: number;
 }
 
 declare interface TooltipProps {
@@ -32,4 +33,10 @@ declare interface TooltipProps {
   align?: 'start' | 'center' | 'end';
   sideOffset?: number;
   alignOffset?: number;
+}
+
+declare interface DocumentListProps {
+  parentDocumentId?: Id<'documents'>;
+  level?: number;
+  data?: Doc<'documents'>[];
 }
