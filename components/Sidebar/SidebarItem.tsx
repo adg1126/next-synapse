@@ -76,7 +76,9 @@ export default function SidebarItem({
       });
   };
 
-  const handleArchive = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const handleArchiveDocument = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     e.stopPropagation();
     if (!id) return;
 
@@ -155,7 +157,7 @@ export default function SidebarItem({
               side='right'
               forceMount
             >
-              <DropdownMenuItem onClick={handleArchive}>
+              <DropdownMenuItem onClick={handleArchiveDocument}>
                 <Trash className='h-4 w-4 mr-2' /> Delete
               </DropdownMenuItem>
               <DropdownMenuSeparator />
