@@ -8,23 +8,27 @@ import { useMutation, useQuery } from 'convex/react';
 import { Id } from '@/convex/_generated/dataModel';
 import { ConvexError } from 'convex/values';
 
+import { useAppDispatch } from '@/hooks/redux';
+
 import { toast } from 'sonner';
 import Spinner from './Spinner';
 import { Search, Trash, Undo2 } from 'lucide-react';
 import { Input } from './ui/input';
 import ConfirmModal from './modals/ConfirmModal';
 import { buttonVariants } from './ui/button';
+import { setModalOpen } from '@/redux/modal/modalSlice';
 
 export default function TrashBox() {
   const router = useRouter(),
     params = useParams();
 
+  const dispatch = useAppDispatch();
+
   const documents = useQuery(api.documents.getArchived),
     restore = useMutation(api.documents.restore),
     remove = useMutation(api.documents.remove);
 
-  const [search, setSearch] = useState(''),
-    [modalOpen, setModalOpen] = useState(false);
+  const [search, setSearch] = useState('');
 
   const filteredDocuments = documents?.filter((doc) =>
     doc.title.toLowerCase().includes(search.toLowerCase())
@@ -74,6 +78,10 @@ export default function TrashBox() {
     if (params.documentId === documentId) {
       router.push('/documents');
     }
+  };
+
+  const handleDeleteModalOpen = (modalOpen: boolean) => {
+    dispatch(setModalOpen({ modalName: 'delete', modalOpen }));
   };
 
   if (documents === undefined) {
@@ -132,7 +140,7 @@ export default function TrashBox() {
                 onConfirm={() => {
                   handleRemoveDocument(doc._id);
                 }}
-                onCancel={() => setModalOpen(false)}
+                onCancel={() => handleDeleteModalOpen(false)}
                 confirmButtonClassName={buttonVariants({
                   variant: 'destructive',
                 })}
@@ -140,7 +148,7 @@ export default function TrashBox() {
                 <div
                   role='button'
                   className='rounded-sm p-2 hover:bg-neutral-200 dark:bg-neutral-500'
-                  onClick={() => setModalOpen(true)}
+                  onClick={() => handleDeleteModalOpen(true)}
                 >
                   <Trash className='h-4 w-4 text-muted-foreground' />
                 </div>

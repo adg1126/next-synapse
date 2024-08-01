@@ -12,6 +12,7 @@ import {
   setSidebarWidth,
 } from '@/redux/sidebar/sidebarSlice';
 import { selectSidebar } from '@/redux/sidebar/sidebarSelectors';
+import { setModalOpen } from '@/redux/modal/modalSlice';
 
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
@@ -160,6 +161,10 @@ export default function Sidebar() {
       });
   };
 
+  const handleSearchModalOpen = () => {
+    dispatch(setModalOpen({ modalName: 'search', modalOpen: true }));
+  };
+
   return (
     <>
       <aside
@@ -202,6 +207,7 @@ export default function Sidebar() {
           <SidebarSwitcher />
           <Hint
             label='Search and quickly jump to a page'
+            subtitle='Ctrl+K'
             side='right'
           >
             <div>
@@ -209,7 +215,7 @@ export default function Sidebar() {
                 label='Search'
                 icon={Search}
                 isSearch
-                onClick={() => {}}
+                onClick={handleSearchModalOpen}
               />
             </div>
           </Hint>
