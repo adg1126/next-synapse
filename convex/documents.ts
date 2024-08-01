@@ -50,15 +50,14 @@ export const archive = mutation({
 
     if (!existingDocument) {
       throw new ConvexError({
-        message: 'File does not exist.',
+        message: 'Document does not exist.',
         code: 400,
       });
     }
 
     if (existingDocument.userId !== userId) {
       throw new ConvexError({
-        message:
-          'Unauthorized: Access denied. You cannot archive this document.',
+        message: `Unauthorized: Access denied. You don't have access this document.`,
         code: 400,
       });
     }
@@ -131,5 +130,129 @@ export const getDocuments = query({
       .collect();
 
     return documents;
+  },
+});
+
+export const getArchived = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return;
+    }
+
+    const userId = identity.subject;
+
+    const documents = await ctx.db
+      .query('documents')
+      .withIndex('by_user', (q) => q.eq('userId', userId))
+      .filter((q) => q.eq(q.field('isArchived'), true))
+      .order('desc')
+      .collect();
+
+    return documents;
+  },
+});
+
+export const restore = mutation({
+  args: { id: v.id('documents') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError({
+        message: 'Unauthorized: Access denied. Login to access this resource.',
+        code: 400,
+      });
+    }
+
+    const userId = identity.subject;
+
+    const existingDocument = await ctx.db.get(args.id);
+
+    if (!existingDocument) {
+      throw new ConvexError({
+        message: 'Document does not exist.',
+        code: 400,
+      });
+    }
+
+    if (existingDocument.userId !== userId) {
+      throw new ConvexError({
+        message: `Unauthorized: Access denied. You don't have access this document.`,
+        code: 400,
+      });
+    }
+
+    const recursiveRestore = async (documentId: Id<'documents'>) => {
+      const children = await ctx.db
+        .query('documents')
+        .withIndex('by_user_parent', (q) =>
+          q.eq('userId', userId).eq('parentDocument', documentId)
+        )
+        .collect();
+
+      for (const child of children) {
+        await ctx.db.patch(child._id, {
+          isArchived: false,
+        });
+
+        await recursiveRestore(child._id);
+      }
+    };
+
+    const options: Partial<Doc<'documents'>> = {
+      isArchived: false,
+    };
+
+    if (existingDocument.parentDocument) {
+      const parent = await ctx.db.get(existingDocument.parentDocument);
+
+      if (parent?.isArchived) {
+        options.parentDocument = undefined;
+      }
+    }
+
+    const document = await ctx.db.patch(args.id, options);
+
+    recursiveRestore(args.id);
+
+    return document;
+  },
+});
+
+export const remove = mutation({
+  args: { id: v.id('documents') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError({
+        message: 'Unauthorized: Access denied. Login to access this resource.',
+        code: 400,
+      });
+    }
+
+    const userId = identity.subject;
+
+    const existingDocument = await ctx.db.get(args.id);
+
+    if (!existingDocument) {
+      throw new ConvexError({
+        message: 'Document does not exist.',
+        code: 400,
+      });
+    }
+
+    if (existingDocument.userId !== userId) {
+      throw new ConvexError({
+        message: `Unauthorized: Access denied. You don't have access this document.`,
+        code: 400,
+      });
+    }
+
+    const document = await ctx.db.delete(args.id);
+
+    return document;
   },
 });
