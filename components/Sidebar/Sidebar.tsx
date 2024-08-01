@@ -24,6 +24,7 @@ import {
   PlusCircle,
   Search,
   Settings,
+  Trash,
 } from 'lucide-react';
 import SidebarSwitcher from '@/components/Sidebar/SidebarSwitcher';
 import NewNoteButton from '../NewNoteButton';
@@ -31,6 +32,8 @@ import Hint from '../Hint';
 import SidebarItem from './SidebarItem';
 import { toast } from 'sonner';
 import DocumentList from './DocumentList';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import TrashBox from '../TrashBox';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -234,6 +237,20 @@ export default function Sidebar() {
               />
             </div>
           </Hint>
+          <Popover>
+            <PopoverTrigger className='w-full mt-4'>
+              <SidebarItem
+                label='Trash'
+                icon={Trash}
+              />
+            </PopoverTrigger>
+            <PopoverContent
+              side={isMobile ? 'bottom' : 'right'}
+              className='p-0 w-72'
+            >
+              <TrashBox />
+            </PopoverContent>
+          </Popover>
         </div>
         <div className='mt-4'>
           <DocumentList />
