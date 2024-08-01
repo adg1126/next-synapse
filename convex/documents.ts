@@ -89,7 +89,7 @@ export const archive = mutation({
   },
 });
 
-export const get = query({
+export const getDocuments = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -102,6 +102,7 @@ export const get = query({
     const documents = await ctx.db
       .query('documents')
       .withIndex('by_user', (query) => query.eq('userId', userId))
+      .filter((q) => q.eq(q.field('isArchived'), false))
       .order('desc')
       .collect();
 
@@ -109,7 +110,7 @@ export const get = query({
   },
 });
 
-export const getDocuments = query({
+export const getParentDocuments = query({
   args: { parentDocument: v.optional(v.id('documents')) },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
