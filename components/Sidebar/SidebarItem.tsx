@@ -8,10 +8,25 @@ import { SidebarItemProps } from '@/types';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { ConvexError } from 'convex/values';
+import { useUser } from '@clerk/nextjs';
 
-import { ChevronDown, ChevronRight, Plus } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronRight,
+  MoreHorizontal,
+  Plus,
+  Trash,
+} from 'lucide-react';
 import { Skeleton } from '../ui/skeleton';
 import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import Hint from '../Hint';
 
 export default function SidebarItem({
   id,
@@ -27,6 +42,8 @@ export default function SidebarItem({
   maxLevel,
 }: SidebarItemProps) {
   const create = useMutation(api.documents.create);
+  const archive = useMutation(api.documents.archive);
+  const { user } = useUser();
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
 
   const handleExpand = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -54,6 +71,29 @@ export default function SidebarItem({
           err instanceof ConvexError
             ? (err.data as { message: string }).message
             : 'Unexpected error occurred';
+
+        toast.error(errorMessage);
+      });
+  };
+
+  const handleArchive = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    if (!id) return;
+
+    const promise = archive({ id });
+
+    promise
+      .then(() => {
+        toast.success('Note moved to trash');
+        if (!expanded) {
+          onExpand?.();
+        }
+      })
+      .catch((err) => {
+        const errorMessage =
+          err instanceof ConvexError
+            ? (err.data as { message: string }).message
+            : 'Failed to archive note.';
 
         toast.error(errorMessage);
       });
@@ -95,13 +135,47 @@ export default function SidebarItem({
             level >= maxLevel! && 'invisible'
           )}
         >
-          <div
-            role='button'
-            onClick={handleCreateChildDocument}
-            className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600'
+          <DropdownMenu>
+            <Hint
+              side='bottom'
+              label='Delete, duplocate and more...'
+            >
+              <DropdownMenuTrigger asChild>
+                <div
+                  role='button'
+                  className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600'
+                >
+                  <MoreHorizontal className='h-4 w-4 text-muted-foreground' />
+                </div>
+              </DropdownMenuTrigger>
+            </Hint>
+            <DropdownMenuContent
+              className='w-60'
+              align='start'
+              side='right'
+              forceMount
+            >
+              <DropdownMenuItem onClick={handleArchive}>
+                <Trash className='h-4 w-4 mr-2' /> Delete
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <div className='text-xs text-muted-foreground p-2'>
+                Last edited by: {user?.fullName}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Hint
+            side='bottom'
+            label='Add a page inside'
           >
-            <Plus className='h-4 w-4 text-muted-foreground' />
-          </div>
+            <div
+              role='button'
+              onClick={handleCreateChildDocument}
+              className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600'
+            >
+              <Plus className='h-4 w-4 text-muted-foreground' />
+            </div>
+          </Hint>
         </div>
       )}
     </div>
