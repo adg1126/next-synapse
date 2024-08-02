@@ -50,3 +50,16 @@ declare interface ConfirmModalProps {
   description?: string;
   confirmButtonClassName?: string;
 }
+
+declare interface DashboardNavbarProps {
+  isCollapsed?: boolean;
+  onResetWidth: () => void;
+}
+
+declare interface CustomBreadcrumbItemProps {
+  id?: Id<'documents'>;
+}
+
+declare interface TitleProps {
+  initialData: Doc<'documents'>;
+}
