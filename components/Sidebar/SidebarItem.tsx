@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import Hint from '../Hint';
+import { useRouter } from 'next/navigation';
 
 export default function SidebarItem({
   id,
@@ -45,6 +46,7 @@ export default function SidebarItem({
   const archive = useMutation(api.documents.archive);
   const { user } = useUser();
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
+  const router = useRouter();
 
   const handleExpand = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
@@ -90,6 +92,7 @@ export default function SidebarItem({
         if (!expanded) {
           onExpand?.();
         }
+        router.push('/documents');
       })
       .catch((err) => {
         const errorMessage =
