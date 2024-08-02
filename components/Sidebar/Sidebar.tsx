@@ -1,7 +1,7 @@
 'use client';
 import React, { ElementRef, useCallback, useEffect, useRef } from 'react';
 
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { useMediaQuery } from 'usehooks-ts';
 import { cn } from '@/lib/utils';
 
@@ -35,11 +35,13 @@ import { toast } from 'sonner';
 import DocumentList from './DocumentList';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import TrashModal from '../modals/TrashModal';
+import DashboardNavbar from '../DashboardNavbar';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const create = useMutation(api.documents.create);
+  const params = useParams();
 
   const dispatch = useAppDispatch();
   const sidebar = useAppSelector(selectSidebar);
@@ -294,15 +296,22 @@ export default function Sidebar() {
           isMobile && 'left-0 w-full'
         )}
       >
-        <nav className='bg-transparent px-3 py-2 w-full'>
-          {isCollapsed && (
-            <MenuIcon
-              role='button'
-              className='h-6 w-6 text-muted-foreground'
-              onClick={resetWidth}
-            />
-          )}
-        </nav>
+        {!!params.documentId ? (
+          <DashboardNavbar
+            isCollapsed={isCollapsed}
+            onResetWidth={resetWidth}
+          />
+        ) : (
+          <nav className='bg-transparent px-3 py-2 w-full'>
+            {isCollapsed && (
+              <MenuIcon
+                role='button'
+                className='h-6 w-6 text-muted-foreground'
+                onClick={resetWidth}
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );
