@@ -66,7 +66,7 @@ export default function SearchCommand() {
           {documents?.map((doc) => (
             <CommandItem
               key={doc._id}
-              value={`${doc._id}-${doc.title}`}
+              value={`${doc._id}`}
               title={doc.title}
               onSelect={handleSelect}
             >
