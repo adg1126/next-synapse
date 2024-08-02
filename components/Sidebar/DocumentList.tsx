@@ -28,7 +28,7 @@ export default function DocumentList({
     }));
   };
 
-  const documents = useQuery(api.documents.getParentDocuments, {
+  const documents = useQuery(api.documents.getChildDocuments, {
     parentDocument: parentDocumentId,
   });
 
