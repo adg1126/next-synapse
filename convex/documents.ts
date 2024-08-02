@@ -110,7 +110,7 @@ export const getDocuments = query({
   },
 });
 
-export const getParentDocuments = query({
+export const getChildDocuments = query({
   args: { parentDocument: v.optional(v.id('documents')) },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -131,6 +131,39 @@ export const getParentDocuments = query({
       .collect();
 
     return documents;
+  },
+});
+
+export const getDocumentById = query({
+  args: { documentId: v.optional(v.id('documents')) },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!args.documentId) {
+      return;
+    }
+
+    const document = await ctx.db.get(args.documentId);
+
+    if (!document) {
+      return;
+    }
+
+    if (!document.isArchived) {
+      return document;
+    }
+
+    if (!identity) {
+      return;
+    }
+
+    const userId = identity.subject;
+
+    if (document.userId !== userId) {
+      return;
+    }
+
+    return document;
   },
 });
 
@@ -253,6 +286,53 @@ export const remove = mutation({
     }
 
     const document = await ctx.db.delete(args.id);
+
+    return document;
+  },
+});
+
+export const update = mutation({
+  args: {
+    id: v.id('documents'),
+    title: v.optional(v.string()),
+    content: v.optional(v.string()),
+    converImage: v.optional(v.string()),
+    icon: v.optional(v.string()),
+    isPublished: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError({
+        message: 'Unauthorized: Access denied. Login to access this resource.',
+        code: 400,
+      });
+    }
+
+    const userId = identity.subject;
+
+    const { id, ...rest } = args;
+
+    const existingDocument = await ctx.db.get(id);
+
+    if (!existingDocument) {
+      throw new ConvexError({
+        message: 'Document does not exist.',
+        code: 400,
+      });
+    }
+
+    if (existingDocument.userId !== userId) {
+      throw new ConvexError({
+        message: `Unauthorized: Access denied. You don't have access this document.`,
+        code: 400,
+      });
+    }
+
+    const document = await ctx.db.patch(id, {
+      ...rest,
+    });
 
     return document;
   },
