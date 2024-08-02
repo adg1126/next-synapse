@@ -1,8 +1,10 @@
 'use client';
 
+import SearchCommand from '@/components/modals/SearchCommand';
+import SettingsModal from '@/components/modals/SettingsModal';
 import { useEffect, useState } from 'react';
 
-export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
+export const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -13,5 +15,10 @@ export const ModalProvider = ({ children }: { children: React.ReactNode }) => {
     return null;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <SearchCommand />
+      <SettingsModal />
+    </>
+  );
 };

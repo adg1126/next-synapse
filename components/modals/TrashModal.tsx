@@ -12,13 +12,14 @@ import { useAppDispatch } from '@/hooks/redux';
 import { setModalOpen } from '@/redux/modal/modalSlice';
 
 import { toast } from 'sonner';
-import Spinner from './Spinner';
+import Spinner from '../Spinner';
 import { Search, Trash, Undo2 } from 'lucide-react';
-import { Input } from './ui/input';
-import ConfirmModal from './modals/ConfirmModal';
-import { buttonVariants } from './ui/button';
+import { Input } from '../ui/input';
+import ConfirmModal from './ConfirmModal';
+import { buttonVariants } from '../ui/button';
+import Hint from '../Hint';
 
-export default function TrashBox() {
+export default function TrashModal() {
   const router = useRouter(),
     params = useParams();
 
@@ -80,8 +81,8 @@ export default function TrashBox() {
     }
   };
 
-  const handleDeleteModalOpen = (modalOpen: boolean) => {
-    dispatch(setModalOpen({ modalName: 'delete', modalOpen }));
+  const handleDeleteModalOpen = (newVal: boolean) => {
+    dispatch(setModalOpen({ modalName: 'delete', modalOpen: newVal }));
   };
 
   if (documents === undefined) {
@@ -130,9 +131,14 @@ export default function TrashBox() {
               <div
                 onClick={(e) => handleRestoreDocument(e, doc._id)}
                 role='button'
-                className='rounded-sm p-2 hover:bg-neutral-200 dark:bg-neutral-500'
+                className='rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800'
               >
-                <Undo2 className='h-4 w-4 text-muted-foreground' />
+                <Hint
+                  side='bottom'
+                  label='Restore'
+                >
+                  <Undo2 className='h-4 w-4 text-muted-foreground' />
+                </Hint>
               </div>
               <ConfirmModal
                 header='Delete document?'
@@ -147,10 +153,15 @@ export default function TrashBox() {
               >
                 <div
                   role='button'
-                  className='rounded-sm p-2 hover:bg-neutral-200 dark:bg-neutral-500'
+                  className='rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800'
                   onClick={() => handleDeleteModalOpen(true)}
                 >
-                  <Trash className='h-4 w-4 text-muted-foreground' />
+                  <Hint
+                    side='bottom'
+                    label='Delete from trash'
+                  >
+                    <Trash className='h-4 w-4 text-muted-foreground' />
+                  </Hint>
                 </div>
               </ConfirmModal>
             </div>

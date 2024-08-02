@@ -14,7 +14,6 @@ import {
 } from '../ui/alert-dialog';
 
 import { ConfirmModalProps } from '@/types';
-import { buttonVariants } from '../ui/button';
 
 export default function ConfirmModal({
   children,

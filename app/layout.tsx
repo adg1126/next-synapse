@@ -9,6 +9,7 @@ import StoreProvider from '@/providers/store-provider';
 
 import { Toaster } from 'sonner';
 import { CheckCircle, CircleAlert, Info, TriangleAlert } from 'lucide-react';
+import { ModalProvider } from '@/providers/modal-provider';
 
 const fontSans = FontSans({
   subsets: ['latin'],
@@ -107,6 +108,7 @@ export default function RootLayout({
                   ),
                 }}
               />
+              <ModalProvider />
               {children}
             </ThemeProvider>
           </StoreProvider>

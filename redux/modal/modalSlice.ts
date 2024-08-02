@@ -9,6 +9,7 @@ interface ModalState {
 const initialState: ModalState = {
   search: { isOpen: false },
   delete: { isOpen: false },
+  settings: { isOpen: false },
 };
 
 const modalSlice = createSlice({

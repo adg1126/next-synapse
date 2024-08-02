@@ -34,7 +34,7 @@ import SidebarItem from './SidebarItem';
 import { toast } from 'sonner';
 import DocumentList from './DocumentList';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import TrashBox from '../TrashBox';
+import TrashModal from '../modals/TrashModal';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -165,6 +165,10 @@ export default function Sidebar() {
     dispatch(setModalOpen({ modalName: 'search', modalOpen: true }));
   };
 
+  const handleSettingsModalOpen = () => {
+    dispatch(setModalOpen({ modalName: 'settings', modalOpen: true }));
+  };
+
   return (
     <>
       <aside
@@ -182,7 +186,7 @@ export default function Sidebar() {
                 role='button'
                 onClick={collapse}
                 className={cn(
-                  'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-0 group-hover/sidebar:opacity-100 transition',
+                  'h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-700 opacity-0 group-hover/sidebar:opacity-100 transition',
                   isMobile && 'opacity-100'
                 )}
               >
@@ -196,7 +200,7 @@ export default function Sidebar() {
           >
             <div>
               <NewNoteButton
-                className='flex items-center justify-center h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 opacity-100'
+                className='flex items-center justify-center h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-700 opacity-100'
                 icon={<NotebookPen className='h-5 w-5' />}
               />
             </div>
@@ -204,7 +208,14 @@ export default function Sidebar() {
         </div>
 
         <div>
-          <SidebarSwitcher />
+          <Hint
+            side='bottom'
+            label='Manage account'
+          >
+            <div>
+              <SidebarSwitcher />
+            </div>
+          </Hint>
           <Hint
             label='Search and quickly jump to a page'
             subtitle='Ctrl+K'
@@ -221,13 +232,14 @@ export default function Sidebar() {
           </Hint>
           <Hint
             label='Search and quickly jump to a page'
+            subtitle='Ctrl+,'
             side='right'
           >
             <div>
               <SidebarItem
                 label='Settings'
                 icon={Settings}
-                onClick={() => {}}
+                onClick={handleSettingsModalOpen}
               />
             </div>
           </Hint>
@@ -243,18 +255,25 @@ export default function Sidebar() {
               />
             </div>
           </Hint>
+
           <Popover>
-            <PopoverTrigger className='w-full mt-4'>
-              <SidebarItem
-                label='Trash'
-                icon={Trash}
-              />
-            </PopoverTrigger>
+            <Hint
+              side='right'
+              label='Restore or permanently delete documents'
+            >
+              <PopoverTrigger className='w-full mt-4'>
+                <SidebarItem
+                  label='Trash'
+                  icon={Trash}
+                />
+              </PopoverTrigger>
+            </Hint>
+
             <PopoverContent
               side={isMobile ? 'bottom' : 'right'}
               className='p-0 w-72'
             >
-              <TrashBox />
+              <TrashModal />
             </PopoverContent>
           </Popover>
         </div>

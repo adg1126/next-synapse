@@ -116,7 +116,7 @@ export default function SidebarItem({
         <div
           role='button'
           className={cn(
-            'h-full rounded-sm hover:bg-neutral-300 dark:bg-neutral-600 mr-1',
+            'h-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-700 mr-1',
             level >= maxLevel! && 'invisible'
           )}
           onClick={handleExpand}
@@ -140,12 +140,12 @@ export default function SidebarItem({
           <DropdownMenu>
             <Hint
               side='bottom'
-              label='Delete, duplocate and more...'
+              label='Delete, duplicate and more...'
             >
               <DropdownMenuTrigger asChild>
                 <div
                   role='button'
-                  className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600'
+                  className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-700'
                 >
                   <MoreHorizontal className='h-4 w-4 text-muted-foreground' />
                 </div>
@@ -173,7 +173,7 @@ export default function SidebarItem({
             <div
               role='button'
               onClick={handleCreateChildDocument}
-              className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:bg-neutral-600'
+              className='opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-700'
             >
               <Plus className='h-4 w-4 text-muted-foreground' />
             </div>
